@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { SSEParser } from './utils/sse'
 
 function App() {
   const [input, setInput] = useState('')
@@ -10,7 +11,7 @@ function App() {
 
   const scrollToBottom = () => {
     const chatContainer = chatContainerRef.current
-    const isScrolledNearBottom = chatContainer && 
+    const isScrolledNearBottom = chatContainer &&
       (chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight < 100)
 
     if (isScrolledNearBottom) {
@@ -28,7 +29,7 @@ function App() {
         const response = await fetch('http://localhost:8001/conversation', {
           method: 'POST'
         })
-        
+
         if (!response.ok) {
           throw { status: response.status, statusText: response.statusText }
         }
@@ -46,7 +47,7 @@ function App() {
 
   const handleError = (error) => {
     let errorMessage = 'An error occurred while sending your message.'
-    
+
     if (error instanceof TypeError && error.message === 'Failed to fetch') {
       errorMessage = 'Unable to connect to the server. Please check your internet connection.'
     } else if (error.name === 'AbortError') {
@@ -54,7 +55,6 @@ function App() {
     } else if (error instanceof SyntaxError) {
       errorMessage = 'Received invalid response from server.'
     } else if (error.status) {
-      // Handle HTTP errors
       switch (error.status) {
         case 429:
           errorMessage = 'Too many requests. Please wait a moment before trying again.'
@@ -81,7 +81,7 @@ function App() {
 
     try {
       const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 30000)
 
       const response = await fetch('http://localhost:8001/send', {
         method: 'POST',
@@ -103,38 +103,22 @@ function App() {
       }
 
       const reader = response.body.getReader()
-      const decoder = new TextDecoder()
+      const sseParser = new SSEParser()
       let assistantMessage = ''
 
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-
-        const chunk = decoder.decode(value)
-        const lines = chunk.split('\n')
-        
-        for (const line of lines) {
-          if (line.trim()) {
-            try {
-              const parsed = JSON.parse(line)
-              if (parsed.event === 'message' && parsed.data) {
-                assistantMessage += parsed.data
-                setMessages(prev => {
-                  const newMessages = [...prev]
-                  const lastMessage = newMessages[newMessages.length - 1]
-                  if (lastMessage?.role === 'assistant') {
-                    lastMessage.content = assistantMessage
-                    return [...newMessages]
-                  } else {
-                    return [...newMessages, { role: 'assistant', content: assistantMessage }]
-                  }
-                })
-              }
-            } catch (e) {
-              console.error('Error parsing SSE message:', e)
-              throw new SyntaxError('Invalid server response format')
+      for await (const parsedEvent of sseParser.processStream(reader)) {
+        if (parsedEvent.data) {
+          assistantMessage += parsedEvent.data
+          setMessages(prev => {
+            const newMessages = [...prev]
+            const lastMessage = newMessages[newMessages.length - 1]
+            if (lastMessage?.role === 'assistant') {
+              lastMessage.content = assistantMessage
+              return [...newMessages]
+            } else {
+              return [...newMessages, { role: 'assistant', content: assistantMessage }]
             }
-          }
+          })
         }
       }
     } catch (error) {
@@ -148,25 +132,23 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md">
-        <div 
+        <div
           ref={chatContainerRef}
           className="h-[500px] overflow-y-auto p-4"
         >
           {messages.map((message, index) => (
             <div
               key={index}
-              className={`mb-4 ${
-                message.role === 'user' ? 'text-right' : 'text-left'
-              }`}
+              className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'
+                }`}
             >
               <div
-                className={`inline-block p-3 rounded-lg ${
-                  message.role === 'user'
+                className={`inline-block p-3 rounded-lg ${message.role === 'user'
                     ? 'bg-blue-500 text-white'
                     : message.isError
-                    ? 'bg-red-100 text-red-700'
-                    : 'bg-gray-200 text-gray-800'
-                }`}
+                      ? 'bg-red-100 text-red-700'
+                      : 'bg-gray-200 text-gray-800'
+                  }`}
               >
                 {message.content}
               </div>
