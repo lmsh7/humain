@@ -1,21 +1,21 @@
 export class SSEParser {
   constructor() {
-    this.buffer = '';
+    this.buffer = "";
     this.decoder = new TextDecoder();
   }
 
   parseEventData(chunk) {
-    const lines = chunk.split('\n');
+    const lines = chunk.split("\n");
     const data = [];
 
     for (const line of lines) {
-      if (line.startsWith('data:')) {
+      if (line.startsWith("data:")) {
         const value = line.slice(5).trim();
         if (value) {
           try {
             data.push(JSON.parse(value));
           } catch (e) {
-            console.error('Error parsing SSE data:', e);
+            console.error("Error parsing SSE data:", e);
           }
         }
       }
@@ -34,7 +34,7 @@ export class SSEParser {
         if (event) yield event;
       }
     } catch (err) {
-      console.error('Stream processing error:', err);
+      console.error("Stream processing error:", err);
     }
   }
 }
