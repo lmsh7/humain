@@ -8,29 +8,21 @@ const useChat = () => {
   const [conversationId, setConversationId] = useState(null);
 
   const handleError = (error) => {
-    let errorMessage = "An error occurred while sending your message.";
+    const errorTypes = {
+      TypeError: {
+        "Failed to fetch":
+          "Unable to connect to the server. Please check your internet connection.",
+      },
+      AbortError: "Request timed out. Please try again.",
+      SyntaxError: "Received invalid response from server.",
+      429: "Too many requests. Please wait a moment before trying again.",
+      503: "Service temporarily unavailable. Please try again later.",
+    };
 
-    if (error instanceof TypeError && error.message === "Failed to fetch") {
-      errorMessage =
-        "Unable to connect to the server. Please check your internet connection.";
-    } else if (error.name === "AbortError") {
-      errorMessage = "Request timed out. Please try again.";
-    } else if (error instanceof SyntaxError) {
-      errorMessage = "Received invalid response from server.";
-    } else if (error.status) {
-      switch (error.status) {
-        case 429:
-          errorMessage =
-            "Too many requests. Please wait a moment before trying again.";
-          break;
-        case 503:
-          errorMessage =
-            "Service temporarily unavailable. Please try again later.";
-          break;
-        default:
-          errorMessage = `Server error (${error.status}). Please try again later.`;
-      }
-    }
+    let errorMessage =
+      errorTypes[error.name]?.[error.message] ||
+      errorTypes[error.status] ||
+      `Server error (${error.status}). Please try again later.`;
 
     setMessages((prev) => [
       ...prev,
@@ -45,9 +37,8 @@ const useChat = () => {
           method: "POST",
         });
 
-        if (!response.ok) {
+        if (!response.ok)
           throw { status: response.status, statusText: response.statusText };
-        }
 
         const data = await response.json();
         setConversationId(data.conversation_id);
@@ -75,9 +66,7 @@ const useChat = () => {
 
       const response = await fetch("http://localhost:8001/send", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           text: userMessage,
           conversation_id: conversationId,
@@ -88,29 +77,47 @@ const useChat = () => {
 
       clearTimeout(timeoutId);
 
-      if (!response.ok) {
+      if (!response.ok)
         throw { status: response.status, statusText: response.statusText };
-      }
 
       const reader = response.body.getReader();
       const sseParser = new SSEParser();
-      let assistantMessage = "";
 
-      for await (const parsedEvent of sseParser.processStream(reader)) {
-        if (parsedEvent.data) {
-          assistantMessage += parsedEvent.data;
+      for await (const event of sseParser.processStream(reader)) {
+    
+        console.log("Event:", event);
+        if (event.data) {
           setMessages((prev) => {
-            const newMessages = [...prev];
-            const lastMessage = newMessages[newMessages.length - 1];
-            if (lastMessage?.role === "assistant") {
-              lastMessage.content = assistantMessage;
-              return [...newMessages];
-            } else {
-              return [
-                ...newMessages,
-                { role: "assistant", content: assistantMessage },
+            // 获取最后一条消息
+            const lastMessage = prev[prev.length - 1];
+            // 合并条件：最后一条存在且类型相同、角色是助手、且不是错误消息
+            if (
+              lastMessage &&
+              lastMessage.event === event.event &&
+              lastMessage.role === "assistant" &&
+              !lastMessage.isError
+            ) {
+              // 合并到现有消息
+              const mergedMessages = [
+                ...prev.slice(0, -1),
+                {
+                  ...lastMessage,
+                  content: lastMessage.content + event.data,
+                },
               ];
+              return mergedMessages;
             }
+
+            // 添加新消息
+            return [
+              ...prev,
+              {
+                role: "assistant",
+                content: event.data,
+                event: event.event,
+                isError: false,
+              },
+            ];
           });
         }
       }
