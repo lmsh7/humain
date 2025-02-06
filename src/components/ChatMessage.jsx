@@ -9,9 +9,8 @@ const ChatMessage = ({ message }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const isThought = message.event === "thought";
 
-    // **DEBUGGING:** Add this to inspect the parsed AST
     const handleRender = (ast) => {
-        //console.log("Parsed AST:", ast); // Uncomment to inspect
+        //console.log("Parsed AST:", ast);
     };
 	
     return (
@@ -49,23 +48,25 @@ const ChatMessage = ({ message }) => {
                                         style={dracula}
                                         language={match[1]}
                                         PreTag="div"
+                                        customStyle={{
+                                            fontSize: '0.875rem', // 14px
+                                            margin: '0.5rem 0',
+                                        }}
                                         {...props}
                                     >
                                         {String(children).replace(/\n$/, '')}
                                     </SyntaxHighlighter>
                                 ) : (
-                                    <code className={className} {...props}>
+                                    <code className={`${className} text-sm`} {...props}>
                                         {children}
                                     </code>
                                 );
                             },
-							// More targeted list styling:
                             ul: ({ node, ordered, ...props }) => <ul style={{ paddingLeft: '2em', listStyleType: 'disc', marginTop: '0.5em', marginBottom: '0.5em' }} {...props} />,
-                            ol: ({ node, ordered, ...props }) => <ol style={{ paddingLeft: '2em', listStyleType: 'decimal', marginTop: '0.5em', marginBottom: '0.5em' }} {...props} />, // Added listStyleType
+                            ol: ({ node, ordered, ...props }) => <ol style={{ paddingLeft: '2em', listStyleType: 'decimal', marginTop: '0.5em', marginBottom: '0.5em' }} {...props} />,
                             li: ({ node, ...props }) => <li style={{ marginBottom: '0.25em' }} {...props} />,
                         }}
-                        //rehypePlugins={[]} // You might need rehype plugins for *very* specific edge cases, but usually not for basic lists.
-						onRender={handleRender} // Add the render handler
+                        onRender={handleRender}
                     >
                         {message.content}
                     </ReactMarkdown>

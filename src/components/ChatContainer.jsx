@@ -1,5 +1,4 @@
 import ChatMessage from "./ChatMessage";
-
 import React from "react";
 
 const ChatContainer = ({
@@ -9,7 +8,7 @@ const ChatContainer = ({
   messagesEndRef,
 }) => {
   return (
-    <div ref={chatContainerRef} className="h-[500px] overflow-y-auto p-4">
+    <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4">
       {messages.map((message, index) => (
         <ChatMessage key={index} message={message} />
       ))}

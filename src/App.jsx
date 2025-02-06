@@ -12,9 +12,9 @@ function App() {
   const [showDebug, setShowDebug] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-2xl mx-auto">
-        <div className="flex justify-end mb-2">
+    <div className="min-h-screen flex flex-col bg-gray-100 py-4">
+      <div className="flex-1 container mx-auto px-4 flex flex-col">
+        <div className="flex justify-end pb-2">
           <button
             onClick={() => setShowDebug(!showDebug)}
             className="text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded"
@@ -23,7 +23,7 @@ function App() {
           </button>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md">
+        <div className="flex-1 bg-white rounded-lg shadow-md flex flex-col mb-4">
           <ChatContainer
             messages={messages}
             isLoading={isLoading}
