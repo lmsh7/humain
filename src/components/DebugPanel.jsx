@@ -8,17 +8,17 @@ import {
   ChevronRight,
   MessageCircle,
 } from "lucide-react";
+import { useChatContext } from "../context/ChatContext";
+import { useContext } from "react";
+import { ThemeContext } from "../context/ThemeContext";
 
-const DebugPanel = ({
-  conversationId,
-  messages,
-  isLoading,
-  toggleDebug = true,
-}) => {
+const DebugPanel = ({ showDebug = false }) => {
+  const { messages = [], isLoading, conversationId } = useChatContext();
+  const { isDarkMode } = useContext(ThemeContext);
   const [showMessages, setShowMessages] = useState(false);
   const [expandedMessages, setExpandedMessages] = useState(new Set());
 
-  if (!toggleDebug) return null;
+  if (!showDebug) return null;
 
   const toggleMessage = (index) => {
     const newExpanded = new Set(expandedMessages);
@@ -31,7 +31,7 @@ const DebugPanel = ({
   };
 
   return (
-    <div className="fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-lg shadow-lg max-w-sm opacity-90 space-y-3 max-h-[80vh] overflow-y-auto">
+    <div className={`fixed bottom-4 right-4 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-800 text-white'} p-4 rounded-lg shadow-lg max-w-sm opacity-90 space-y-3 max-h-[80vh] overflow-y-auto z-50`}>
       <div className="flex items-center gap-2 border-b border-gray-600 pb-2">
         <AlertCircle size={16} className="text-yellow-400" />
         <span className="font-semibold">Debug Info</span>
@@ -95,7 +95,7 @@ const DebugPanel = ({
             )}
           </button>
 
-          {showMessages && (
+          {showMessages && messages.length > 0 && (
             <div className="mt-2 space-y-2">
               {messages.map((message, index) => (
                 <div key={index} className="bg-gray-700 rounded p-2">
@@ -113,7 +113,7 @@ const DebugPanel = ({
                       }`}
                     />
                     <span className="text-xs">
-                      {message.role} - {message.content.slice(0, 30)}...
+                      {message.role} - {message.content?.slice(0, 30) || ""}...
                     </span>
                     {expandedMessages.has(index) ? (
                       <ChevronDown size={12} className="ml-auto" />
@@ -132,7 +132,7 @@ const DebugPanel = ({
                         <div>
                           <span className="text-gray-400">Error: </span>
                           <span className="text-white">
-                            {message.isError?.toString()}
+                            {String(Boolean(message.isError))}
                           </span>
                         </div>
                         <div>
@@ -140,13 +140,13 @@ const DebugPanel = ({
                             Content Length:{" "}
                           </span>
                           <span className="text-white">
-                            {message.content.length}
+                            {message.content?.length || 0}
                           </span>
                         </div>
                         <div>
                           <span className="text-gray-400">Content: </span>
                           <pre className="mt-1 whitespace-pre-wrap break-words text-white">
-                            {message.content}
+                            {message.content || ""}
                           </pre>
                         </div>
                       </div>
