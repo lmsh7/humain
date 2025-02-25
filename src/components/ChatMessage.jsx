@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import AnimatedTitle from "./AnimatedTitle"; // Add this import
 
 const ChatMessage = ({ message }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -12,8 +13,9 @@ const ChatMessage = ({ message }) => {
     const handleRender = (ast) => {
         //console.log("Parsed AST:", ast);
     };
-	
+
     return (
+
         <div className={`mb-4 flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
             <div className={`inline-block p-3 rounded-lg max-w-[80%] ${message.role === "user"
                 ? "bg-blue-500 text-white"
@@ -24,6 +26,8 @@ const ChatMessage = ({ message }) => {
                         : "bg-gray-200 text-gray-800"
                 }`}
             >
+                <AnimatedTitle fontSize={32} />
+
                 {isThought && (
                     <button
                         onClick={() => setIsCollapsed(!isCollapsed)}

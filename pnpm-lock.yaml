@@ -11,6 +11,9 @@ importers:
       dompurify:
         specifier: ^3.2.4
         version: 3.2.4
+      hanzi-writer:
+        specifier: ^3.7.2
+        version: 3.7.2
       highlight.js:
         specifier: ^11.11.1
         version: 11.11.1
@@ -781,6 +784,9 @@ packages:
   globals@11.12.0:
     resolution: {integrity: sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==}
     engines: {node: '>=4'}
+
+  hanzi-writer@3.7.2:
+    resolution: {integrity: sha512-9v8V45rY4leG62qmq+c9MzjT4mPrVbFATv5tWWw3NucaxOO4bM/CiJ8qfPt/NOQuvWYhOhuHu6TzfjZ0ibY6jg==}
 
   hasown@2.0.2:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
@@ -2169,6 +2175,8 @@ snapshots:
       path-scurry: 1.11.1
 
   globals@11.12.0: {}
+
+  hanzi-writer@3.7.2: {}
 
   hasown@2.0.2:
     dependencies:

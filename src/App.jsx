@@ -22,7 +22,6 @@ function App() {
             {showDebug ? "Hide Debug" : "Show Debug"}
           </button>
         </div>
-
         <div className="flex-1 bg-white rounded-lg shadow-md flex flex-col mb-4">
           <ChatContainer
             messages={messages}
