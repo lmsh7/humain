@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import AnimatedTitle from "./AnimatedTitle"; // Add this import
+import AnimatedText from "./AnimatedText"; // Add this import
 
 const ChatMessage = ({ message }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -26,8 +26,6 @@ const ChatMessage = ({ message }) => {
                         : "bg-gray-200 text-gray-800"
                 }`}
             >
-                <AnimatedTitle fontSize={32} />
-
                 {isThought && (
                     <button
                         onClick={() => setIsCollapsed(!isCollapsed)}
@@ -74,6 +72,9 @@ const ChatMessage = ({ message }) => {
                     >
                         {message.content}
                     </ReactMarkdown>
+                    {/* <div className="prose max-w-2xl mx-auto">
+                        <AnimatedText text={message.content} className="text-2xl font-semibold mb-4" />
+                    </div> */}
                 </div>
             </div>
         </div>
