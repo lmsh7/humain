@@ -4,14 +4,12 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
-// import AnimatedTitle from "./AnimatedTitle";
 
 const ChatMessage = memo(({ message, isDarkMode = false }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [showTitle, setShowTitle] = useState(false);
     const isThought = message.event === "thought";
     
-    // Only show title if it's explicitly detected in the message content
+    // 获取标题（如果存在）
     const hasTitleMatch = message.content?.match(/^#\s+(.+)$/m);
     const title = hasTitleMatch ? hasTitleMatch[1] : null;
 
@@ -35,19 +33,9 @@ const ChatMessage = memo(({ message, isDarkMode = false }) => {
                                 : "bg-gray-200 text-gray-800"
                 }`}
             >
-                {/* Only render AnimatedTitle if explicitly needed */}
-                {/* {title && showTitle && (
-                    <AnimatedTitle 
-                        title={title} 
-                        fontSize={24}
-                        strokeColor={isDarkMode ? "#ffffff" : "#000000"}
-                        outlineColor={isDarkMode ? "#374151" : "#d4e3fc"}
-                    />
-                )}
-
-                {title && !showTitle && (
+                {title && (
                     <h3 className="text-xl font-bold mb-2">{title}</h3>
-                )} */}
+                )}
 
                 {isThought && (
                     <button
@@ -61,7 +49,7 @@ const ChatMessage = memo(({ message, isDarkMode = false }) => {
                         ) : (
                             <ChevronUp className="w-4 h-4" />
                         )}
-                        <span className="text-sm font-medium">Thinking Process</span>
+                        <span className="text-sm font-medium">思考过程</span>
                     </button>
                 )}
                 
@@ -103,23 +91,12 @@ const ChatMessage = memo(({ message, isDarkMode = false }) => {
                             a: ({ node, ...props }) => <a className="text-blue-500 hover:underline" {...props} />
                         }}
                     >
-                        {/* Remove the title from the content if it exists */}
+                        {/* 如果存在标题，从内容中移除 */}
                         {title 
                             ? message.content.replace(/^#\s+(.+)$/m, '') 
                             : message.content}
                     </ReactMarkdown>
                 </div>
-
-                {title && (
-                    <button 
-                        onClick={() => setShowTitle(!showTitle)}
-                        className={`mt-2 text-xs ${
-                            isDarkMode ? "text-gray-400 hover:text-gray-200" : "text-gray-500 hover:text-gray-700"
-                        }`}
-                    >
-                        {showTitle ? "Hide animated title" : "Show animated title"}
-                    </button>
-                )}
             </div>
         </div>
     );

@@ -14,19 +14,19 @@ function App() {
     <ThemeProvider>
       {(themeContext) => (
         <ChatProvider>
-          <div className={`min-h-screen flex flex-col ${themeContext.isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100'} transition-colors duration-200`}>
+          <div className={`min-h-screen flex flex-col ${themeContext.isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-50'} transition-colors duration-200`}>
             <Header>
               <ThemeToggle />
               <button
                 onClick={() => setShowDebug(!showDebug)}
                 className={`text-sm px-3 py-1 ${themeContext.isDarkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} rounded ml-2`}
               >
-                {showDebug ? "Hide Debug" : "Show Debug"}
+                {showDebug ? "隐藏调试" : "显示调试"}
               </button>
             </Header>
             
-            <div className="flex-1 container mx-auto px-4 flex flex-col">
-              <div className={`flex-1 ${themeContext.isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-md flex flex-col mb-4 transition-colors duration-200`}>
+            <div className="flex-1 container mx-auto px-4 py-4 flex flex-col">
+              <div className={`flex-1 ${themeContext.isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-md flex flex-col transition-colors duration-200`}>
                 <ChatContainer />
                 <ChatInput />
               </div>

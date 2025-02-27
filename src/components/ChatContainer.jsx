@@ -15,8 +15,8 @@ const ChatContainer = () => {
       {messages.length === 0 ? (
         <div className="h-full flex items-center justify-center">
           <div className={`text-center ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
-            <h2 className="text-xl font-semibold mb-2">Welcome to the Chat</h2>
-            <p>Type a message to start a conversation</p>
+            <h2 className="text-xl font-semibold mb-2">欢迎使用聊天</h2>
+            <p>输入消息开始对话</p>
           </div>
         </div>
       ) : (
@@ -37,7 +37,7 @@ const ChatContainer = () => {
               <div className="h-2 w-2 bg-current rounded-full"></div>
               <div className="h-2 w-2 bg-current rounded-full"></div>
             </div>
-            <span className="ml-2">Thinking...</span>
+            <span className="ml-2">思考中...</span>
           </div>
         </div>
       )}
