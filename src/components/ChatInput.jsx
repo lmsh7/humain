@@ -7,7 +7,7 @@ const ChatInput = () => {
   const { 
     input, 
     setInput, 
-    messages, // 添加messages变量
+    messages,
     handleSubmit, 
     isLoading, 
     conversationId, 
@@ -26,23 +26,23 @@ const ChatInput = () => {
 
   return (
     <div className={`border-t ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} p-4 transition-colors duration-200`}>
-      <form onSubmit={handleSubmit} className="flex gap-2 items-end">
+      <form onSubmit={handleSubmit} className="flex gap-2 items-center">
         <div className="flex-1 relative">
           <textarea
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyPress}
-            rows={Math.min(4, Math.max(1, input.split('\n').length))}
-            className={`w-full p-3 pr-10 border rounded-lg resize-none ${
+            rows={1}
+            className={`w-full p-3 h-[46px] pr-10 border rounded-lg resize-none ${
               isDarkMode 
                 ? 'bg-gray-700 border-gray-600 text-gray-100 focus:border-blue-500' 
                 : 'bg-white border-gray-300 text-gray-800 focus:border-blue-400'
             } focus:ring-2 focus:ring-blue-300 focus:outline-none transition-colors duration-200`}
             placeholder={
               conversationId
-                ? "Type your message... (Shift+Enter for new line)"
-                : "Initializing conversation..."
+                ? "输入消息...(Shift+Enter换行)"
+                : "初始化对话中..."
             }
             disabled={isLoading || !conversationId}
           />
@@ -60,7 +60,7 @@ const ChatInput = () => {
         <button
           type="submit"
           disabled={isLoading || !conversationId || !input.trim()}
-          className={`p-3 rounded-lg ${
+          className={`p-3 h-[46px] rounded-lg ${
             isDarkMode 
               ? 'bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:text-blue-300' 
               : 'bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300'
@@ -77,7 +77,7 @@ const ChatInput = () => {
           type="button"
           onClick={clearChat}
           disabled={!messages || messages.length === 0 || isLoading}
-          className={`p-3 rounded-lg ${
+          className={`p-3 h-[46px] rounded-lg ${
             isDarkMode 
               ? 'bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-600' 
               : 'bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400'

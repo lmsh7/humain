@@ -34,49 +34,49 @@ const DebugPanel = ({ showDebug = false }) => {
     <div className={`fixed bottom-4 right-4 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-800 text-white'} p-4 rounded-lg shadow-lg max-w-sm opacity-90 space-y-3 max-h-[80vh] overflow-y-auto z-50`}>
       <div className="flex items-center gap-2 border-b border-gray-600 pb-2">
         <AlertCircle size={16} className="text-yellow-400" />
-        <span className="font-semibold">Debug Info</span>
+        <span className="font-semibold">调试信息</span>
       </div>
 
       <div className="space-y-2 text-sm">
         <div className="flex items-center gap-2">
           <Database size={14} />
-          <span className="text-gray-300">Conversation ID:</span>
+          <span className="text-gray-300">对话ID:</span>
           <span
             className={`font-mono ${conversationId ? "text-green-400" : "text-red-400"}`}
           >
-            {conversationId || "Not initialized"}
+            {conversationId || "未初始化"}
           </span>
         </div>
 
         <div className="flex items-center gap-2">
           <Timer size={14} />
-          <span className="text-gray-300">Connection Status:</span>
+          <span className="text-gray-300">连接状态:</span>
           <span className="flex items-center gap-1">
             {isLoading ? (
-              <span className="text-yellow-400">Processing</span>
+              <span className="text-yellow-400">处理中</span>
             ) : (
               <span className="text-green-400 flex items-center gap-1">
                 <Check size={14} />
-                Ready
+                就绪
               </span>
             )}
           </span>
         </div>
 
         <div className="pt-2 border-t border-gray-600">
-          <div className="text-gray-300 mb-1">Message Stats:</div>
+          <div className="text-gray-300 mb-1">消息统计:</div>
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="bg-gray-700 p-2 rounded">
-              Total: {messages.length}
+              总计: {messages.length}
             </div>
             <div className="bg-gray-700 p-2 rounded">
-              User: {messages.filter((m) => m.role === "user").length}
+              用户: {messages.filter((m) => m.role === "user").length}
             </div>
             <div className="bg-gray-700 p-2 rounded">
-              Assistant: {messages.filter((m) => m.role === "assistant").length}
+              助手: {messages.filter((m) => m.role === "assistant").length}
             </div>
             <div className="bg-gray-700 p-2 rounded">
-              Errors: {messages.filter((m) => m.isError).length}
+              错误: {messages.filter((m) => m.isError).length}
             </div>
           </div>
         </div>
@@ -87,7 +87,7 @@ const DebugPanel = ({ showDebug = false }) => {
             className="flex items-center gap-2 w-full text-left text-gray-300 hover:text-white"
           >
             <MessageCircle size={14} />
-            <span>Message Details</span>
+            <span>消息详情</span>
             {showMessages ? (
               <ChevronDown size={14} />
             ) : (
@@ -113,7 +113,7 @@ const DebugPanel = ({ showDebug = false }) => {
                       }`}
                     />
                     <span className="text-xs">
-                      {message.role} - {message.content?.slice(0, 30) || ""}...
+                      {message.role === "user" ? "用户" : "助手"} - {message.content?.slice(0, 30) || ""}...
                     </span>
                     {expandedMessages.has(index) ? (
                       <ChevronDown size={12} className="ml-auto" />
@@ -126,25 +126,25 @@ const DebugPanel = ({ showDebug = false }) => {
                     <div className="mt-2 pl-4 border-l-2 border-gray-600">
                       <div className="space-y-1 text-xs">
                         <div>
-                          <span className="text-gray-400">Role: </span>
-                          <span className="text-white">{message.role}</span>
+                          <span className="text-gray-400">角色: </span>
+                          <span className="text-white">{message.role === "user" ? "用户" : "助手"}</span>
                         </div>
                         <div>
-                          <span className="text-gray-400">Error: </span>
+                          <span className="text-gray-400">错误: </span>
                           <span className="text-white">
-                            {String(Boolean(message.isError))}
+                            {message.isError ? "是" : "否"}
                           </span>
                         </div>
                         <div>
                           <span className="text-gray-400">
-                            Content Length:{" "}
+                            内容长度: 
                           </span>
                           <span className="text-white">
                             {message.content?.length || 0}
                           </span>
                         </div>
                         <div>
-                          <span className="text-gray-400">Content: </span>
+                          <span className="text-gray-400">内容: </span>
                           <pre className="mt-1 whitespace-pre-wrap break-words text-white">
                             {message.content || ""}
                           </pre>
